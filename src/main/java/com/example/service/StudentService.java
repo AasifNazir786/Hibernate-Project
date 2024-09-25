@@ -28,21 +28,48 @@ public class StudentService{
     
     public Student getStudentById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Student.class, id);
+            Student stu = session.get(Student.class, id);
+            session.close();
+            return stu;
         }
     }
 
    
     public List<Student> getAllStudents() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        List<Student> students = session.createQuery("from students", Student.class).list();
+        List<Student> students = session.createQuery("from Student", Student.class).list();
         session.close();
         return students;
     }
 
     
+    @SuppressWarnings("deprecation")
     public Student updateStudent(int id, Student stu) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateStudent'");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        Student existingStudent = null;
+    
+        try {
+            transaction = session.beginTransaction();
+            existingStudent = session.get(Student.class, id);
+            if (existingStudent != null) {
+                existingStudent.setName(stu.getName());
+                existingStudent.setEmail(stu.getEmail());
+                session.update(existingStudent);
+            } else {
+                System.out.println("Student with ID " + id + " not found.");
+            }
+    
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    
+        return existingStudent;
     }
 }
