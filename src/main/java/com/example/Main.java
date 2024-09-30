@@ -8,26 +8,39 @@ import com.example.service.StudentService;
 public class Main {
     public static void main(String[] args) {
         StudentService ss = new StudentService();
+        //Adding a student in database
+        {
+            Student student = new Student();
+            student.setName("Waris");
+            student.setEmail("waris@gmail.com");
+            ss.addStudent(student);
+        }
 
-        // Student stu = new Student();
-        // stu.setName("Jamid");
-        // stu.setEmail("jamid@gmail.com");
+        //Retrieving student by id from database
+        {
+            Student student = ss.getStudentById(2);
+            System.out.println(student);
+        }
 
-        // ss.addStudent(stu);
-
-        Student student = ss.getStudentById(1);
-        System.out.println(student);
-
+        //Fetch all the students from database and print it
         List<Student> students = ss.getAllStudents();
         for (Student student2 : students) {
             System.out.println(student2);
         }
 
-        Student studen = new Student();
-        studen.setName("Akieb");
-        studen.setEmail("akieb@gmail.com");
-        Student stud = ss.updateStudent(1, studen);
-        System.out.println(stud);
+        //Update a student in a database
+        {
+            Student student = new Student();
+            student.setName("Aasif");
+            student.setEmail("aasif@gmail.com");
+            Student stud = ss.updateStudent(2, student);
+            System.out.println(stud);
+        }
 
+        //delete a student by its id from database
+        {
+            int id = 5;
+            ss.deleteStudent(id);
+        }
     }
 }
